@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to Save Gmail Attachments to Google Drive Automatically (n8n Tutorial)</title>
+  <meta name="description" content="A step-by-step n8n tutorial that saves Gmail attachments to Google Drive automatically. Plain English, zero code, tested with a real inbox.">
+  <link rel="canonical" href="https://plainworkflows.com/save-gmail-attachments-to-google-drive.html">
+  <meta property="og:title" content="How to Save Gmail Attachments to Google Drive Automatically">
+  <meta property="og:description" content="A step-by-step n8n tutorial that files every Gmail attachment into Google Drive for you. Zero code, tested with a real inbox.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://plainworkflows.com/save-gmail-attachments-to-google-drive.html">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="logo" href="index.html">Plain<span> Automation</span></a>
+      <nav class="site-nav" aria-label="Main navigation">
+        <a href="index.html">Home</a>
+        <a href="index.html#reviews">Reviews</a>
+        <a href="about.html">About</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <article class="article-wrap">
+      <header class="article-header">
+        <h1>How to Save Gmail Attachments to Google Drive Automatically (n8n Tutorial)</h1>
+        <div class="article-meta">
+          <span class="updated">Last updated: July 2026</span>
+          <span>Reading time: about 8 minutes</span>
+          <span>Written for beginners</span>
+        </div>
+      </header>
+
+      <div class="article-body">
+
+        <p>
+          Every month, around the 28th, I used to do the same dumb ritual. Open Gmail.
+          Search for every client invoice and contract that came in. Download each attachment,
+          one at a time. Then upload them all into a Google Drive folder so my bookkeeper
+          could find them. Eleven clients, maybe fifteen files, forty minutes of my life
+          I'll never get back.
+        </p>
+        <p>
+          The part that finally broke me: the invoice for March was called
+          <code>final_v2_REAL_final.pdf</code>, and I almost filed the wrong version because
+          I'd downloaded <code>final_v2.pdf</code> the week before and couldn't tell them
+          apart in my Downloads folder. That was it. I blocked out a Saturday afternoon,
+          opened n8n, and built a little robot that does the whole job for me. It took about
+          25 minutes, most of which was me waiting for Google to approve the connection.
+        </p>
+        <p>
+          Here's exactly what I built, click by click. If you've never heard of n8n, it's a
+          visual automation tool — you connect blocks on a canvas instead of writing code.
+          I wrote a <a href="what-is-n8n.html">plain-English explainer on what n8n is</a> if
+          you want the full picture first.
+        </p>
+
+        <div class="video-embed">
+          <div class="video-wrapper">
+            <iframe src="https://www.youtube.com/embed/TB1Q8a4joUE" title="Save Gmail attachments to Google Drive with n8n (video version)" loading="lazy" allowfullscreen></iframe>
+          </div>
+          <p class="video-caption">Watch: the 4-minute video version</p>
+        </div>
+
+        <h2>What you'll need</h2>
+        <ul>
+          <li>An <strong>n8n Cloud</strong> account (the free trial is plenty for this — more on cost below).</li>
+          <li>The <strong>Gmail account</strong> where your attachments land.</li>
+          <li>A <strong>Google Drive folder</strong> ready to receive files. Mine is called <strong>Client Files</strong>.</li>
+        </ul>
+
+        <h2>Step 1: Create a new workflow</h2>
+        <p>
+          Log in to n8n Cloud and hit <strong>Create workflow</strong> in the top right.
+          You'll get a blank canvas with one lonely "Start" area. Give it a name immediately —
+          I called mine <em>Gmail → Drive attachments</em> — because three months from now you
+          will not remember what "My workflow 4" does. Trust me on this.
+        </p>
+
+        <h2>Step 2: Add a Gmail Trigger and point it at emails with attachments</h2>
+        <p>
+          Click the plus button, search for <strong>Gmail Trigger</strong>, and drop it in.
+          The first time you do this, n8n will ask you to connect your Google account — a
+          window pops up, you click through Google's permission screens, done. It feels
+          slightly alarming the first time. It's normal.
+        </p>
+        <p>
+          Now the important bit. In the trigger's settings there's a <strong>Search</strong>
+          box. Type this in:
+        </p>
+        <p><code>has:attachment</code></p>
+        <p>
+          That's a Gmail search filter — the same one you can type into Gmail's own search
+          bar — and it simply means "only emails that have a file attached." Without this
+          line, the workflow fires on <em>every</em> email: newsletters, receipts, your aunt
+          forwarding you a meme. With it, only the stuff that actually has a file gets
+          through. You can get fancier later (for example
+          <code>has:attachment filename:pdf</code> for PDFs only), but start simple.
+        </p>
+
+        <h2>Step 3: Connect a Google Drive "Upload file" node</h2>
+        <p>
+          Add a second node: search for <strong>Google Drive</strong>, and choose the
+          <strong>Upload file</strong> operation. Connect your Google account again (same
+          account is fine), then pick the folder where files should land — in my case,
+          <strong>Client Files</strong>. The node automatically picks up the attachment from
+          the Gmail trigger, so there's nothing clever to configure. This pleasantly
+          surprised me. I expected at least one cryptic setting. There isn't one.
+        </p>
+
+        <h2>Step 4: Save and activate</h2>
+        <p>
+          Hit <strong>Save</strong>, then flip the <strong>Active</strong> toggle in the top
+          right. This is the step everyone forgets — a saved workflow does nothing until
+          it's active. Ask me how I know. (Twenty confused minutes, that's how.)
+        </p>
+
+        <h2>Step 5: Test it with a real email</h2>
+        <p>
+          From a second email address, send yourself a test email with an attachment.
+          Anything works — I used a photo of my dog. Then wait about a minute.
+        </p>
+
+        <h2>Step 6: Check the Executions page</h2>
+        <p>
+          In n8n, open the <strong>Executions</strong> tab. You're looking for a green
+          <strong>Success</strong> row. Green means the workflow caught the email and ran
+          every step without complaining. If you see red instead, click the row — n8n shows
+          you exactly which node failed, which is genuinely one of its best features.
+        </p>
+
+        <h2>Step 7: Look in your Drive folder</h2>
+        <p>
+          Open the Client Files folder in Google Drive. Your test file should be sitting
+          there. Mine was. I may have said "oh, nice" out loud to an empty room.
+        </p>
+        <p>
+          That's the whole build. From now on, every email with an attachment gets filed
+          automatically. My end-of-month ritual is down to zero minutes.
+        </p>
+
+        <h2>What this costs</h2>
+        <p>
+          This workflow is tiny — two nodes, running maybe 60 times a month for a typical
+          freelancer. The n8n Cloud free trial handles it without breaking a sweat, and even
+          the paid Starter plan (2,500 workflow runs a month) treats it as a rounding error.
+          If you're allergic to subscriptions entirely, the self-hosted version of n8n is
+          free. And yes, <strong>Make can do this exact same flow</strong> — if you're
+          weighing the two on price, I ran the real numbers in my
+          <a href="n8n-vs-make-vs-zapier.html">n8n vs Make vs Zapier comparison</a>.
+        </p>
+
+        <div class="cta-box">
+          <p><strong>Build this yourself in about 25 minutes.</strong> Start the n8n Cloud trial, follow the steps above, and you'll never manually file an attachment again.</p>
+          <a class="btn" href="{{N8N_AFFILIATE_LINK}}" rel="sponsored nofollow">Try n8n &rarr;</a>
+        </div>
+
+        <h2>Three gotchas nobody warns you about</h2>
+        <ul>
+          <li><strong>The Google authorization dance.</strong> The first time you connect Gmail or Drive, Google shows you permission screens and possibly an "unverified app" style warning. It's standard for automation tools. Click through it once and you're done forever.</li>
+          <li><strong>Big attachments take a beat.</strong> A 40 MB contract doesn't appear in Drive instantly — give it a few seconds per file. Don't panic-refresh and conclude it's broken. It's just uploading.</li>
+          <li><strong>The trigger checks once a minute.</strong> By default, the Gmail Trigger polls for new mail every 60 seconds. So "automatic" really means "within about a minute." For filing invoices, that's fine. Nobody needs their contract filed in real time.</li>
+        </ul>
+
+        <div class="verdict">
+          <h2>Our verdict</h2>
+          <span class="verdict-score">The best first n8n workflow you can build — small, useful, done in one sitting.</span>
+          <p>
+            This is exactly the kind of automation I recommend starting with: one clear job,
+            two nodes, an obvious payoff. There's no clever logic to debug, and the result is
+            visible within minutes — a file shows up in a folder, and a chore disappears from
+            your month.
+          </p>
+          <p>
+            If this is your first taste of n8n and you want to know what else it can do, read
+            <a href="what-is-n8n.html">my beginner's guide to n8n</a>. If you're still deciding
+            between tools, the <a href="n8n-vs-make-vs-zapier.html">three-way comparison</a>
+            has the honest pricing math.
+          </p>
+          <a class="btn" href="{{N8N_AFFILIATE_LINK}}" rel="sponsored nofollow">Get started with n8n &rarr;</a>
+        </div>
+
+        <p class="note">
+          Some links on this page are affiliate links. If you sign up through them, we may earn a
+          commission at no extra cost to you. It never influences what we write — read our
+          <a href="affiliate-disclosure.html">affiliate disclosure</a>. Prices verified July 2026;
+          always check the provider's own site before buying.
+        </p>
+
+      </div>
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <nav class="footer-nav" aria-label="Footer navigation">
+        <a href="index.html">Home</a>
+        <a href="index.html#reviews">Reviews</a>
+        <a href="about.html">About</a>
+        <a href="affiliate-disclosure.html">Affiliate Disclosure</a>
+        <a href="privacy-policy.html">Privacy Policy</a>
+        <a href="https://x.com/GEBILAOWANG_WYF" rel="noopener">X (Twitter)</a>
+      </nav>
+      <p class="footer-small">&copy; 2026 Plain Automation. All rights reserved.</p>
+    </div>
+  </footer>
+
+</body>
+</html>
